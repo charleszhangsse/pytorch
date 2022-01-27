@@ -101,14 +101,17 @@ UPGRADER_CPP_SRC = CodeTemplate("""/**
  * cd ~/pytorch && python torch/csrc/jit/mobile/upgrader_mobile.cpp
  */
 
+#include <caffe2/serialize/versions.h>
 #include <torch/csrc/jit/mobile/upgrader_mobile.h>
 
-#include <ATen/core/ivalue.h>
-#include <caffe2/serialize/versions.h>
-#include <torch/csrc/jit/mobile/type_parser.h>
+namespace c10 {
+TypePtr parseType(const std::string& pythonStr);
+} // namespace c10
 
 namespace torch {
 namespace jit {
+
+// clang-format off
 
 // From operator_versions_map
 ${operator_version_map}
@@ -136,7 +139,6 @@ const std::vector<ByteCodeFunctionWithOperator>& getUpgraderBytecodeList() {
 
 } // namespace jit
 } // namespace torch
-
 """)
 
 UPGRADER_MOBILE_FILE_NAME = "upgrader_mobile.cpp"
